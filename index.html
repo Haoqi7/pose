@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拍照姿势库</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 
+                        'Open Sans', 'Helvetica Neue', sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 头部样式 */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #f1f5f9;
+            text-align: center;
+            padding: 24px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 20px;
+        }
+
+        /* 分类栏样式 */
+        .category-bar {
+            width: 100%;
+            max-width: 640px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 32px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-group {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .filter-btn {
+            padding: 16px;
+            border: none;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            color: #64748b;
+            transition: color 0.3s ease;
+        }
+
+        .filter-btn.active .icon {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-text {
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* 图片区域 */
+        .photo-container {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .photo-container:hover {
+            transform: scale(1.02);
+        }
+
+        #photo {
+            width: 100%;
+            display: block;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            border-radius: 24px;
+        }
+
+        /* 底部样式 */
+        footer {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #f1f5f9;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+
+        footer p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 640px) {
+            .filter-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filter-btn {
+                padding: 12px;
+            }
+            
+            .btn-content {
+                flex-direction: row;
+                justify-content: center;
+                gap: 6px;
+            }
+            
+            .btn-text {
+                font-size: 0.75rem;
+            }
+
+            .icon {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 24px 16px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <header>
+        <h1>创意拍照姿势库</h1>
+    </header>
+
+    <div class="content">
+        <div class="category-bar">
+            <div class="filter-group" id="filterGroup"></div>
+        </div>
+
+        <div class="photo-container">
+            <img id="photo" src="" alt="精选姿势示范" />
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 创意拍照姿势库. All Rights Reserved.</p>
+    </footer>
+
+<script>
+// 图片数据（直接嵌入）
+const imageData = [
+    {
+        "id": 1,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-1.jpg"
+    },
+    {
+        "id": 2,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-2.jpg"
+    },
+    {
+        "id": 3,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-3.jpg"
+    },
+    {
+        "id": 4,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-4.jpg"
+    },
+    {
+        "id": 5,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-5.jpg"
+    },
+    {
+        "id": 7,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-7.jpg"
+    },
+    {
+        "id": 6,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-6.jpg"
+    },
+    {
+        "id": 8,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-8.jpg"
+    },
+    {
+        "id": 9,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-9.jpg"
+    },
+    {
+        "id": 10,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-10.jpg"
+    },
+    {
+        "id": 11,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-11.jpg"
+    },
+    {
+        "id": 12,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-12.jpg"
+    },
+    {
+        "id": 13,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-13.jpg"
+    },
+    {
+        "id": 14,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-14.jpg"
+    },
+    {
+        "id": 15,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-15.jpg"
+    },
+    {
+        "id": 16,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-16.jpg"
+    },
+    {
+        "id": 17,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-17.jpg"
+    },
+    {
+        "id": 18,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-18.jpg"
+    },
+    {
+        "id": 19,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-19.jpg"
+    },
+    {
+        "id": 20,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-20.jpg"
+    },
+    {
+        "id": 21,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-21.jpg"
+    },
+    {
+        "id": 22,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-22.jpg"
+    },
+    {
+        "id": 23,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-23.jpg"
+    },
+    {
+        "id": 24,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-24.jpg"
+    },
+    {
+        "id": 25,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-25.jpg"
+    },
+    {
+        "id": 26,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-26.jpg"
+    },
+    {
+        "id": 27,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-27.jpg"
+    },
+    {
+        "id": 28,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-28.jpg"
+    },
+    {
+        "id": 29,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-29.jpg"
+    },
+    {
+        "id": 30,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-30.jpg"
+    },
+    {
+        "id": 31,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-31.jpg"
+    },
+    {
+        "id": 32,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-32.jpg"
+    },
+    {
+        "id": 33,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-33.jpg"
+    },
+    {
+        "id": 34,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-34.jpg"
+    },
+    {
+        "id": 35,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-35.jpg"
+    },
+    {
+        "id": 36,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-36.jpg"
+    },
+    {
+        "id": 37,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-37.jpg"
+    },
+    {
+        "id": 38,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-38.jpg"
+    },
+    {
+        "id": 39,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-39.jpg"
+    },
+    {
+        "id": 40,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-40.jpg"
+    },
+    {
+        "id": 41,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-41.jpg"
+    },
+    {
+        "id": 42,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-42.jpg"
+    },
+    {
+        "id": 43,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-43.jpg"
+    },
+    {
+        "id": 44,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-44.jpg"
+    },
+    {
+        "id": 45,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-45.jpg"
+    },
+    {
+        "id": 46,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-46.jpg"
+    },
+    {
+        "id": 47,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-47.jpg"
+    },
+    {
+        "id": 48,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-48.jpg"
+    },
+    {
+        "id": 49,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-49.jpg"
+    },
+    {
+        "id": 50,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-50.jpg"
+    },
+    {
+        "id": 51,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-51.jpg"
+    },
+    {
+        "id": 52,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-52.jpg"
+    },
+    {
+        "id": 53,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-53.jpg"
+    },
+    {
+        "id": 54,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-54.jpg"
+    },
+    {
+        "id": 55,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-55.jpg"
+    },
+    {
+        "id": 56,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-56.jpg"
+    },
+    {
+        "id": 57,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-57.jpg"
+    },
+    {
+        "id": 58,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-58.jpg"
+    },
+    {
+        "id": 59,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-59.jpg"
+    },
+    {
+        "id": 60,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-60.jpg"
+    },
+    {
+        "id": 61,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-61.jpg"
+    },
+    {
+        "id": 62,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-62.jpg"
+    },
+    {
+        "id": 63,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-63.jpg"
+    },
+    {
+        "id": 64,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-64.jpg"
+    },
+    {
+        "id": 65,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-65.jpg"
+    },
+    {
+        "id": 66,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-66.jpg"
+    },
+    {
+        "id": 67,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-67.jpg"
+    },
+    {
+        "id": 68,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-68.jpg"
+    },
+    {
+        "id": 69,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-69.jpg"
+    },
+    {
+        "id": 70,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-70.jpg"
+    },
+    {
+        "id": 71,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-71.jpg"
+    },
+    {
+        "id": 72,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-72.jpg"
+    },
+    {
+        "id": 73,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-73.jpg"
+    },
+    {
+        "id": 74,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-74.jpg"
+    },
+    {
+        "id": 75,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-75.jpg"
+    },
+    {
+        "id": 76,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-76.jpg"
+    },
+    {
+        "id": 77,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-77.jpg"
+    },
+    {
+        "id": 78,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-78.jpg"
+    },
+    {
+        "id": 79,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-79.jpg"
+    },
+    {
+        "id": 80,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-80.jpg"
+    },
+    {
+        "id": 81,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-81.jpg"
+    },
+    {
+        "id": 82,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-82.jpg"
+    },
+    {
+        "id": 83,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-83.jpg"
+    },
+    {
+        "id": 84,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-84.jpg"
+    },
+    {
+        "id": 85,
+        "title": "花间姿势",
+        "category": [
+            "all",
+            "flower"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-85.jpg"
+    },
+    {
+        "id": 86,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-86.jpg"
+    },
+    {
+        "id": 87,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-87.jpg"
+    },
+    {
+        "id": 88,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-88.jpg"
+    },
+    {
+        "id": 89,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-89.jpg"
+    },
+    {
+        "id": 90,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-90.jpg"
+    },
+    {
+        "id": 91,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-91.jpg"
+    },
+    {
+        "id": 92,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-92.jpg"
+    },
+    {
+        "id": 93,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-93.jpg"
+    },
+    {
+        "id": 94,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-94.jpg"
+    },
+    {
+        "id": 95,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-95.jpg"
+    },
+    {
+        "id": 96,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-96.jpg"
+    },
+    {
+        "id": 97,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-97.jpg"
+    },
+    {
+        "id": 98,
+        "title": "城市街拍",
+        "category": [
+            "all",
+            "city"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-98.jpg"
+    },
+    {
+        "id": 99,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-99.jpg"
+    },
+    {
+        "id": 100,
+        "title": "海边风情",
+        "category": [
+            "all",
+            "seaside"
+        ],
+        "type": "拍照姿势",
+        "image": "tu/image-100.jpg"
+    }
+];
+
+// 分类配置
+const categories = ['all', 'flower', 'city', 'seaside'];
+const categoryMap = {
+    all: '全部',
+    flower: '花',
+    city: '城市',
+    seaside: '海边'
+};
+
+// 初始化状态
+let currentIndex = 0;
+let filteredImages = [];
+
+// 页面加载初始化
+document.addEventListener('DOMContentLoaded', () => {
+    // 生成分类按钮
+    const filterGroup = document.getElementById('filterGroup');
+    categories.forEach(category => {
+        const button = document.createElement('button');
+        button.className = `filter-btn ${category === 'all' ? 'active' : ''}`;
+        button.dataset.category = category;
+        button.innerHTML = `
+            <div class="btn-content">
+                ${getCategoryIcon(category)}
+                <span class="btn-text">${categoryMap[category]}</span>
+            </div>
+        `;
+        button.addEventListener('click', () => filterImages(category));
+        filterGroup.appendChild(button);
+    });
+
+    // 初始加载
+    filterImages('all');
+});
+
+// 分类图标生成
+function getCategoryIcon(category) {
+    const icons = {
+        flower: '<i class="fas fa-leaf icon"></i>',
+        city: '<i class="fas fa-city icon"></i>',
+        seaside: '<i class="fas fa-umbrella-beach icon"></i>',
+        all: '<i class="fas fa-border-all icon"></i>'
+    };
+    return icons[category] || icons.all;
+}
+
+// 图片过滤功能
+function filterImages(category) {
+    // 更新按钮状态
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.category === category);
+    });
+
+    // 过滤图片
+    filteredImages = category === 'all' 
+        ? imageData 
+        : imageData.filter(img => img.category.includes(category));
+    
+    currentIndex = 0;
+    updateImageDisplay();
+}
+
+// 更新图片显示
+function updateImageDisplay() {
+    const photoElement = document.getElementById('photo');
+    if (filteredImages.length > 0) {
+        photoElement.src = filteredImages[currentIndex].image;
+        photoElement.alt = filteredImages[currentIndex].title;
+    } else {
+        photoElement.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 15a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm1-6a1 1 0 0 0-1-1h-1a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-4z"/></svg>';
+        photoElement.alt = '暂无相关图片';
+    }
+}
+
+// 手势控制（保留原滑动功能）
+let touchStartX = 0;
+const SWIPE_THRESHOLD = 50;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+});
+
+document.addEventListener('touchend', e => {
+    if (!filteredImages.length) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - touchStartX;
+    
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+        deltaX > 0 ? navigate(-1) : navigate(1);
+    }
+});
+
+function navigate(direction) {
+    currentIndex = (currentIndex + direction + filteredImages.length) % filteredImages.length;
+    updateImageDisplay();
+}
+</script>
+</body>
+</html>
