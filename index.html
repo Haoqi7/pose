@@ -23,19 +23,19 @@
         }
 
         /* 头部样式 */
-        header {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: #f1f5f9;
-            text-align: center;
-            padding: 24px 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: #f1f5f9;
+    text-align: center;
+    padding: 12px 0;  /* 原24px→16px */
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1); /* 阴影缩小 */
+}
 
-        header h1 {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
+header h1 {
+    font-size: 20px;  /* 原28px→20px */
+    font-weight: 600;
+    letter-spacing: 0.8px;  /* 原1px→0.8px */
+}
 
         /* 内容区域 */
         .content {
@@ -51,10 +51,10 @@
             width: 100%;
             max-width: 640px;
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 12px;
+            padding: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 32px;
+            margin-bottom: 24px;
             border: 1px solid #e2e8f0;
         }
 
@@ -65,10 +65,10 @@
         }
 
         .filter-btn {
-            padding: 16px;
+            padding: 12px;
             border: none;
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
@@ -76,7 +76,20 @@
             justify-content: center;
             align-items: center;
         }
+.photo-container {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
 
+.filter-group {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
         .filter-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -95,7 +108,7 @@
         }
 
         .icon {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #64748b;
             transition: color 0.3s ease;
         }
@@ -137,12 +150,12 @@
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: #f1f5f9;
             text-align: center;
-            padding: 20px 0;
+            padding: 16px 0;
             margin-top: auto;
         }
 
         footer p {
-            font-size: 14px;
+            font-size: 12px;
             opacity: 0.8;
         }
 
@@ -153,13 +166,13 @@
             }
             
             .filter-btn {
-                padding: 12px;
+                padding: 8px;
             }
             
             .btn-content {
                 flex-direction: row;
                 justify-content: center;
-                gap: 6px;
+                gap: 4px;
             }
             
             .btn-text {
